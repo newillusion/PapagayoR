@@ -30,8 +30,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>542</width>
-           <height>194</height>
+           <width>566</width>
+           <height>222</height>
           </rect>
          </property>
         </widget>
@@ -113,6 +113,11 @@
              <item>
               <property name="text">
                <string>English</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Russian</string>
               </property>
              </item>
              <item>
@@ -358,7 +363,7 @@
      <x>0</x>
      <y>0</y>
      <width>872</width>
-     <height>22</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -414,6 +419,7 @@
    <addaction name="actionSave"/>
    <addaction name="separator"/>
    <addaction name="actionPlay"/>
+   <addaction name="actionPause"/>
    <addaction name="actionStop"/>
    <addaction name="separator"/>
    <addaction name="actionZoomIn"/>
@@ -548,6 +554,18 @@
    </property>
    <property name="toolTip">
     <string>About Papagayo</string>
+   </property>
+  </action>
+  <action name="actionPause">
+   <property name="icon">
+    <iconset resource="../rsrc/papagayo.qrc">
+     <normaloff>:/images/images/papagayo.png</normaloff>:/images/images/papagayo.png</iconset>
+   </property>
+   <property name="text">
+    <string>Pause</string>
+   </property>
+   <property name="toolTip">
+    <string>Pause</string>
    </property>
   </action>
  </widget>
@@ -811,6 +829,22 @@
     <hint type="sourcelabel">
      <x>-1</x>
      <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>435</x>
+     <y>333</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionPause</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onPlay()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>435</x>
+     <y>333</y>
     </hint>
     <hint type="destinationlabel">
      <x>435</x>

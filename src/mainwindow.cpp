@@ -197,6 +197,23 @@ void MainWindow::dropEvent(QDropEvent *event)
 	}
 }
 
+void MainWindow::keyPressEvent(QKeyEvent* event)
+	{
+	if (event->key() == ' ')
+		{
+		if (fDoc && fDoc->GetAudioPlayer())
+			{
+			if (fDoc->GetAudioPlayer()->state() == QMediaPlayer::PlayingState)
+				fDoc->GetAudioPlayer()->pause();
+			else
+				fDoc->GetAudioPlayer()->play();
+			}
+
+		//this->onPlay();
+		//QMessageBox::warning( this, "Play", "Space bar pressed" );
+		}
+	}
+
 void MainWindow::updateActions()
 {
 	if (fDoc)
@@ -211,7 +228,7 @@ void MainWindow::updateActions()
 
 		ui->voiceName->setEnabled(true);
 		ui->voiceText->setEnabled(true);
-		ui->languageChoice->setEnabled(false);
+		ui->languageChoice->setEnabled(true);
 		ui->breakdownButton->setEnabled(fDoc->fCurrentVoice && !fDoc->fCurrentVoice->fText.isEmpty());
 		ui->exportChoice->setEnabled(true);
 		ui->exportButton->setEnabled(fDoc->fCurrentVoice && !fDoc->fCurrentVoice->fText.isEmpty());
@@ -332,6 +349,13 @@ void MainWindow::onPlay()
 	if (fDoc && fDoc->GetAudioPlayer())
 		fDoc->GetAudioPlayer()->play();
 }
+
+void MainWindow::onPause()
+{
+	if (fDoc && fDoc->GetAudioPlayer())
+		fDoc->GetAudioPlayer()->play();
+}
+
 
 void MainWindow::onStop()
 {

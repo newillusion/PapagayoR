@@ -184,7 +184,7 @@ void WaveformView::positionChanged(qint64 milliseconds)
 				if (frame > fAudioStopFrame)
 				{
 					if (fDoc->GetAudioPlayer())
-						fDoc->GetAudioPlayer()->stop();
+						fDoc->GetAudioPlayer()->pause();
 					fAudioStopFrame = -1;
 				}
 				else
@@ -199,7 +199,7 @@ void WaveformView::positionChanged(qint64 milliseconds)
 				if (frame > fCurFrame + 1)
 				{
 					if (fDoc->GetAudioPlayer())
-						fDoc->GetAudioPlayer()->stop();
+						fDoc->GetAudioPlayer()->pause();
 				}
 			}
 			else
@@ -522,7 +522,8 @@ void WaveformView::mouseMoveEvent(QMouseEvent *event)
 void WaveformView::mouseReleaseEvent(QMouseEvent *event)
 {
 	if (fDoc && fDoc->GetAudioPlayer() && fAudioStopFrame < 0)
-		fDoc->GetAudioPlayer()->stop();
+		fDoc->GetAudioPlayer()->pause();
+
 	if (event->button() == Qt::RightButton && fSelectedWord)
 	{
 		// manually enter the pronunciation for this word

@@ -29,6 +29,7 @@ protected:
 	void closeEvent(QCloseEvent *event);
 	void dragEnterEvent(QDragEnterEvent *event);
 	void dropEvent(QDropEvent *event);
+	void keyPressEvent(QKeyEvent* event);
 
 public slots:
 	void updateActions();
@@ -39,6 +40,7 @@ private slots:
 	void onFileSave();
 	void onFileSaveAs();
 	void onPlay();
+	void onPause();
 	void onStop();
 	void onFpsChange(QString text);
 	void onNewVoice();
