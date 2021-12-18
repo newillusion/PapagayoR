@@ -21,14 +21,20 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->exportChoice->addItem("Spine");
 
+	updateMouths();
+	updateLanguages();
+
 	connect(ui->actionZoomIn, SIGNAL(triggered()), ui->waveformView, SLOT(onZoomIn()));
 	connect(ui->actionZoomOut, SIGNAL(triggered()), ui->waveformView, SLOT(onZoomOut()));
 	connect(ui->actionAutoZoom, SIGNAL(triggered()), ui->waveformView, SLOT(onAutoZoom()));
 	connect(ui->fpsEdit, SIGNAL(textChanged(QString)), this, SLOT(onFpsChange(QString)));
 	connect(ui->waveformView, SIGNAL(frameChanged(int)), ui->mouthView, SLOT(onFrameChanged(int)));
+	connect(ui->languageChoice, SIGNAL(currentTextChanged(QString)), this, SLOT(onLanguageTextChanged(QString)));
 
 	RestoreSettings();
 	updateActions();
+
+	LipsyncDoc::LoadDictionaries("EN");
 }
 
 MainWindow::~MainWindow()
@@ -214,6 +220,20 @@ void MainWindow::keyPressEvent(QKeyEvent* event)
 		}
 	}
 
+
+void MainWindow::updateMouths()
+	{
+	//ui->comboBox->c
+	ui->MouthSet->clear();
+
+	for (int i=0; i<ui->mouthView->GetMouthSetCount(); i++)
+		{
+		ui->MouthSet->addItem( ui->mouthView->GetMouthSetName(i) );
+		}
+	}
+
+
+
 void MainWindow::updateActions()
 {
 	if (fDoc)
@@ -249,7 +269,7 @@ void MainWindow::updateActions()
 
 		ui->voiceName->setEnabled(false);
 		ui->voiceText->setEnabled(false);
-		ui->languageChoice->setEnabled(false);
+		ui->languageChoice->setEnabled(true);
 		ui->breakdownButton->setEnabled(false);
 		ui->exportChoice->setEnabled(false);
 		ui->exportButton->setEnabled(false);
@@ -478,12 +498,47 @@ void MainWindow::onVoiceTextChanged()
 	updateActions();
 }
 
+
+void MainWindow::updateLanguages()
+	{
+	ui->languageChoice->clear();
+
+	ui->languageChoice->addItem( "English");
+
+	QDir lngdir;
+	lngdir.setFilter(QDir::Dirs);
+	lngdir.setPath( ":/dictionaries/dictionaries/" );
+	auto lnglist = lngdir.entryInfoList();
+
+	for (int i=0; i<lnglist.length(); i++)
+		{
+		QString lng =  lnglist[i].fileName();
+		ui->languageChoice->addItem( lng );
+		}
+	}
+
+void MainWindow::onLanguageTextChanged(QString lngfull)
+	{
+	onStop();
+
+	QString ln = lngfull;	//ui->languageChoice->currentText();	//.toUpper();
+	//if (ln.length()>2) ln.resize(2);
+
+	LipsyncDoc::ClearDoctionaries();
+	LipsyncDoc::LoadDictionaries(ln);
+
+	onBreakdown();
+	}
+
+
 void MainWindow::onBreakdown()
 {
 	if (!fDoc || !fDoc->fCurrentVoice)
 		return;
 
-	LipsyncDoc::LoadDictionaries();
+	//QString ln = ui->languageChoice->currentText();	//.toUpper();
+	//if (ln.length()>2) ln.resize(2);
+
 	fDoc->fDirty = true;
 	int32 duration = fDoc->Fps() * 10;
 	if (fDoc->GetAudioExtractor())
@@ -492,7 +547,8 @@ void MainWindow::onBreakdown()
 		f *= fDoc->Fps();
 		duration = PG_ROUND(f);
 	}
-	fDoc->fCurrentVoice->RunBreakdown("EN", duration);
+
+	fDoc->fCurrentVoice->RunBreakdown(/*ln,*/ duration);
 	ui->waveformView->update();
 }
 

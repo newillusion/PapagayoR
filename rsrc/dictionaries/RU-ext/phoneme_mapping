@@ -1,0 +1,105 @@
+﻿# Papagayo a lip-sync tool for use with Lost Marbles Moho
+# Copyright (C) 2005 Mike Clifton
+# Contact information at http//www.lostmarble.com
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not write to the Free Software
+# Foundation Inc. 51 Franklin Street Fifth Floor Boston MA  02110-1301 USA.
+
+
+
+# Эта таблица содержит перевод русских букв в расширенные фонемы Preston Blair
+# и английские буквы, читаемые как транслитерация.
+
+. AEI
+. BMP
+. ChJSh
+. etc
+. FV
+. L
+. O
+. R
+. Th
+. U
+. WQ
+. rest # not really a phoneme - this is used in-between phrases when the mouth is at rest
+
+
+## Russian letters to Preston Blair on the right
+A AEI
+Б BMP
+В FV
+Г etc
+Д etc
+Е AEI
+Ё AEI-O
+Ж ChJSh
+З Th
+И AEI
+Ё AEI-O
+К etc
+Л L
+М BMP
+Н etc
+О O
+П BMP
+Р R
+С Th
+Т etc
+У U
+Ф FV
+Х etc
+Ц Th
+Ч ChJSh
+Ш ChJSh
+Щ ChJSh
+Ъ rest
+Ы WQ
+Ь rest
+Э AEI
+Ю U
+Я etc-AEI
+
+## English
+A AEI
+B BMP
+C etc
+D etc
+E AEI
+F FV
+G etc
+H etc
+I AEI
+J ChJSh
+K etc
+L L
+M BMP
+N etc
+O O
+P BMP
+Q WQ
+R R
+S etc
+T etc
+U U
+V FV
+W WQ
+X etc
+Y etc
+Z Th
+
+
+
+
+
+

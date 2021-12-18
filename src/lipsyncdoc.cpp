@@ -28,34 +28,54 @@ LipsyncWord::LipsyncWord()
 LipsyncWord::~LipsyncWord()
 {
 	while (!fPhonemes.isEmpty())
-		delete fPhonemes.takeFirst();
+		delete fPhonemes.takeLast();
 }
 
-void LipsyncWord::RunBreakdown(QString language)
+void LipsyncWord::RunBreakdown(/*QString language*/)
 {
 	while (!fPhonemes.isEmpty())
-		delete fPhonemes.takeFirst();
+		delete fPhonemes.takeLast();
 
 	QString		text = fText;
-	text.remove(QRegExp("[.,!?;-/()¿]"));
+	text.remove(QRegExp("[.,!?;-/()¿:]"));
 	QStringList	pronunciation;
-	if (language == "EN")
-	{
+
+	if (LipsyncDoc::PhonemeDictionary.count()>0)
+		{
 		pronunciation = LipsyncDoc::PhonemeDictionary.value(text.toUpper());
 		if (pronunciation.size() > 1)
-		{
-			for (int32 i = 1; i < pronunciation.size(); i++)
 			{
+			for (int32 i = 1; i < pronunciation.size(); i++)
+				{
 				QString p = pronunciation.at(i);
 				if (p.length() == 0)
 					continue;
 				LipsyncPhoneme *phoneme = new LipsyncPhoneme;
 				phoneme->fText = LipsyncDoc::DictionaryToPhonemeMap.value(p, "etc");
 				fPhonemes << phoneme;
+				}
 			}
 		}
-	}
+	else /* (language == "RU") */
+		{
+		// here no PhonemeDictionary, because letter == prononciation
+		for (int i=0; i<text.length(); i++)
+			{
+			QString up = text.mid(i,1).toUpper();
+			auto ps = LipsyncDoc::DictionaryToPhonemeMap.value( up, "etc");
+
+			auto psl = ps.split("-");
+			for (int pi=0; pi<psl.length(); pi++)
+				{
+				LipsyncPhoneme*	phoneme = new LipsyncPhoneme();
+				phoneme->fText = psl[pi];
+				fPhonemes << phoneme;
+				}
+			}
+		}
 }
+
+
 
 void LipsyncWord::RepositionPhoneme(LipsyncPhoneme *phoneme)
 {
@@ -87,7 +107,7 @@ LipsyncPhrase::~LipsyncPhrase()
 		delete fWords.takeFirst();
 }
 
-void LipsyncPhrase::RunBreakdown(QString language)
+void LipsyncPhrase::RunBreakdown(/*QString language*/)
 {
 	// break phrase into words
 	while (!fWords.isEmpty())
@@ -104,7 +124,7 @@ void LipsyncPhrase::RunBreakdown(QString language)
 
 	// now break down the words
 	for (int32 i = 0; i < fWords.size(); i++)
-		fWords[i]->RunBreakdown(language);
+		fWords[i]->RunBreakdown(/*language*/);
 }
 
 void LipsyncPhrase::RepositionWord(LipsyncWord *word)
@@ -288,7 +308,7 @@ void LipsyncVoice::Export(QString path)
 
 
 
-void LipsyncVoice::RunBreakdown(QString language, int32 audioDuration)
+void LipsyncVoice::RunBreakdown(/*QString language, */int32 audioDuration)
 {
 	// make sure there is a space after all punctuation marks
 	QString punctuation = ".,!?;";
@@ -323,7 +343,7 @@ void LipsyncVoice::RunBreakdown(QString language, int32 audioDuration)
 
 	// now break down the phrases
 	for (int32 i = 0; i < fPhrases.size(); i++)
-		fPhrases[i]->RunBreakdown(language);
+		fPhrases[i]->RunBreakdown(/*language*/);
 
 	// for first-guess frame alignment, count how many phonemes we have
 	int32 phonemeCount = 0;
@@ -544,62 +564,90 @@ LipsyncDoc::~LipsyncDoc()
 		delete fVoices.takeFirst();
 }
 
-void LipsyncDoc::LoadDictionaries()
+void LipsyncDoc::ClearDoctionaries()
+	{
+	Phonemes.clear();
+	PhonemeDictionary.clear();
+	DictionaryToPhonemeMap.clear();
+	}
+
+
+void LipsyncDoc::LoadDictionaries( QString lng )
 {
 	if (PhonemeDictionary.size() > 0)
 		return;
 
 	QFile	*f;
 
-	f = new QFile(":/dictionaries/dictionaries/standard_dictionary");
+	QString base = ":/dictionaries/dictionaries/";
+
+	if (lng!="EN" && lng!="English") base += lng + "/";
+
+	f = new QFile(base+"standard_dictionary");
 	if (f->open(QIODevice::ReadOnly | QIODevice::Text))
-	{
-		LoadDictionary(f);
+		{
+		LoadDictionary(f, &PhonemeDictionary);
 		f->close();
-	}
+		}
 	delete f;
 
-	f = new QFile(":/dictionaries/dictionaries/extended_dictionary");
+	f = new QFile(base+"extended_dictionary");
 	if (f->open(QIODevice::ReadOnly | QIODevice::Text))
-	{
-		LoadDictionary(f);
+		{
+		LoadDictionary(f, &PhonemeDictionary);
 		f->close();
-	}
+		}
 	delete f;
 
-	f = new QFile(":/dictionaries/dictionaries/user_dictionary");
+	f = new QFile(base+"user_dictionary");
 	if (f->open(QIODevice::ReadOnly | QIODevice::Text))
-	{
-		LoadDictionary(f);
+		{
+		LoadDictionary(f, &PhonemeDictionary);
 		f->close();
-	}
+		}
 	delete f;
 
-	f = new QFile(":/dictionaries/dictionaries/phoneme_mapping");
+	f = new QFile(base+"phoneme_mapping");
 	if (f->open(QIODevice::ReadOnly | QIODevice::Text))
 	{
 		while (!f->atEnd())
 		{
 			QString line = f->readLine();
 			line = line.trimmed();
-			if (line.left(1) == "#" || line.length() == 0)
-				continue; // skip comments
+			if (line.length() == 0) continue;
 
-			QStringList strList = line.split(' ', QString::SkipEmptyParts);
-			if (strList.size() > 1)
-			{
-				if (strList[0] == ".")
-					Phonemes << strList.at(1);
-				else
-					DictionaryToPhonemeMap.insert(strList.at(0), strList.at(1));
-			}
+			auto i = line.indexOf('#');
+			if (i>=0) line.remove(i, line.length()-i);	// skip comments
+
+			line = line.trimmed();
+			if (line.length()==0) continue;
+
+			i = line.indexOf(' ');
+			if (i<0) continue;
+
+			QString l = line.left(i);
+			QString r = line.mid(i+1);
+
+			if (l == ".")
+				Phonemes << r;
+			else
+				DictionaryToPhonemeMap.insert(l, r);	// r-part can contains several phonems
+
+			//QStringList strList = line.split(' ', QString::SkipEmptyParts);
+			//if (strList.size() > 1)
+			//{
+			//	if (strList[0] == ".")
+			//		Phonemes << strList.at(1);
+			//	else
+			//		DictionaryToPhonemeMap.insert(strList.at(0), strList.at(1));
+			//}
 		}
 		f->close();
 	}
 	delete f;
 }
 
-void LipsyncDoc::LoadDictionary(QFile *f)
+void LipsyncDoc::LoadDictionary(QFile* f, QHash<QString,QStringList>* phondict)
 {
 	while (!f->atEnd())
 	{
@@ -611,8 +659,8 @@ void LipsyncDoc::LoadDictionary(QFile *f)
 		QStringList strList = line.split(' ', QString::SkipEmptyParts);
 		if (strList.size() > 1)
 		{
-			if (!PhonemeDictionary.contains(strList.at(0)))
-				PhonemeDictionary.insert(strList.at(0), strList);
+			if (!phondict->contains(strList.at(0)))
+				phondict->insert(strList.at(0), strList);
 		}
 	}
 }

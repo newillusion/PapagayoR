@@ -1,0 +1,71 @@
+﻿# Papagayo a lip-sync tool for use with Lost Marbles Moho
+# Copyright (C) 2005 Mike Clifton
+# Contact information at http//www.lostmarble.com
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not write to the Free Software
+# Foundation Inc. 51 Franklin Street Fifth Floor Boston MA  02110-1301 USA.
+
+
+
+# Эта таблица содержит перевод русских букв в фонемы Preston Blair.
+# Preston Blair phoneme set
+# AI O E U etc L WQ MBP FV
+# etc=CDGKNRSThYZ
+
+. AI
+. O
+. E
+. U
+. etc # this covers Preston Blairs CDGKNRSThYZ mouth shape
+. L
+. WQ
+. MBP
+. FV
+. rest # not really a phoneme - this is used in-between phrases when the mouth is at rest
+
+
+## Phoneme conversion dictionary CMU on the left to Preston Blair on the right
+A AI
+Б MBP
+В FV
+Г etc
+Д etc
+Е AI.
+Ё E-O
+Ж etc
+З etc
+И E
+Ё E-O
+К etc
+Л L
+М MBP
+Н etc
+О O
+П MBP
+Р etc
+С etc
+Т etc
+У WQ
+Ф FV
+Х etc
+Ц etc
+Ч etc
+Ш etc
+Щ etc
+Ъ etc
+Ы E
+Ь etc
+Э AI
+Ю E-U
+Я E-IA

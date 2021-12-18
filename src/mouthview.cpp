@@ -1,4 +1,5 @@
 #include <QPainter>
+#include <QDir>
 
 #include "mouthview.h"
 
@@ -9,7 +10,43 @@ MouthView::MouthView(QWidget *parent) :
 	fMouthID = 0;
 	fFrame = 0;
 
-	LipsyncDoc::LoadDictionaries();
+	// It load LipsyncDoc::Phonemes, but we can take phonemes from
+	// file name...
+	//LipsyncDoc::LoadDictionaries();
+
+	QString basePath = ":/mouths/mouths/";
+
+
+	QDir mouthsdir;
+	mouthsdir.setFilter( QDir::Dirs );
+	mouthsdir.setPath( basePath );
+	auto folders = mouthsdir.entryInfoList();
+
+	for (int fi=0; fi<folders.length(); fi++)
+		{
+		QDir imagedir;
+		imagedir.setFilter( QDir::Files );
+		imagedir.setPath( folders.at(fi).absoluteFilePath() );
+		auto images = imagedir.entryInfoList();
+
+		if (images.length()<=0) continue;
+
+		fMouths.append( QHash<QString,QImage*>() );
+		fMouthsName[fi] = folders.at(fi).fileName();
+
+		for (int i=0; i<images.length(); i++)
+			{
+			QString fn = images.at(i).fileName();
+			if (fn.endsWith(".jpg"))
+				{
+				QString name = fn.left( fn.length() - 4);	// 4-length if ".jpg"
+				fMouths.last().insert( name, new QImage( images.at(i).absoluteFilePath() ) );
+				}
+			}
+		}
+
+
+	/*
 
 	for (int32 mouth = 0; mouth < 4; mouth++)
 	{
@@ -31,11 +68,13 @@ MouthView::MouthView(QWidget *parent) :
 				break;
 		}
 
-		for (int32 i = 0; i < LipsyncDoc::Phonemes.size(); i++)
-		{
-			fMouths[mouth].insert(LipsyncDoc::Phonemes[i], new QImage(basePath + LipsyncDoc::Phonemes[i] + ".jpg"));
-		}
+		//for (int32 i = 0; i < LipsyncDoc::Phonemes.size(); i++)
+		//{
+		//	fMouths[mouth].insert(LipsyncDoc::Phonemes[i], new QImage(basePath + LipsyncDoc::Phonemes[i] + ".jpg"));
+		//}
 	}
+	*/
+
 }
 
 MouthView::~MouthView()
@@ -48,9 +87,13 @@ void MouthView::SetDocument(LipsyncDoc *doc)
 	update();
 }
 
+int		MouthView::GetMouthSetCount()		{ return fMouths.length(); }
+QString MouthView::GetMouthSetName(int i)	{ return fMouthsName[i]; }
+
+
 void MouthView::SetMouth(int32 id)
 {
-	fMouthID = PG_CLAMP(id, 0, 3);
+	fMouthID = PG_CLAMP(id, 0, fMouths.length()-1);
 }
 
 void MouthView::onMouthChanged(int id)

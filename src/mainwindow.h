@@ -24,6 +24,8 @@ public:
 	bool IsOKToCloseDocument();
 	void RestoreSettings();
 	void SaveSettings();
+	void updateMouths();
+	void updateLanguages();
 
 protected:
 	void closeEvent(QCloseEvent *event);
@@ -49,6 +51,7 @@ private slots:
 	void onVoiceItemChanged(QListWidgetItem *item);
 	void onVoiceNameChanged();
 	void onVoiceTextChanged();
+	void onLanguageTextChanged(QString text);
 	void onBreakdown();
 	void onExport();
     void exportAnimeStudio();

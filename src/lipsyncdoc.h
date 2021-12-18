@@ -28,7 +28,7 @@ public:
 	LipsyncWord();
 	~LipsyncWord();
 
-	void RunBreakdown(QString language);
+	void RunBreakdown(/*QString language*/);
 	void RepositionPhoneme(LipsyncPhoneme *phoneme);
 
 	QString					fText;
@@ -45,7 +45,7 @@ public:
 	LipsyncPhrase();
 	~LipsyncPhrase();
 
-	void RunBreakdown(QString language);
+	void RunBreakdown(/*QString language*/);
 	void RepositionWord(LipsyncWord *word);
 
 	QString					fText;
@@ -66,7 +66,7 @@ public:
 	void Save(QTextStream &out);
 	void Export(QString path);
     void ExportSpine(QString path);
-	void RunBreakdown(QString language, int32 audioDuration);
+	void RunBreakdown(/*QString language, */int32 audioDuration);
 	void RepositionPhrase(LipsyncPhrase *phrase, int32 audioDuration);
 	QString GetPhonemeAtFrame(int32 frame);
     QString GetWordAtFrame(int32 frame);
@@ -85,7 +85,8 @@ public:
 	LipsyncDoc();
 	~LipsyncDoc();
 
-	static void LoadDictionaries();
+	static void ClearDoctionaries();
+	static void LoadDictionaries( QString language );
 
 	void Open(const QString &path);
 	void OpenAudio(const QString &path);
@@ -102,7 +103,7 @@ public:
 private slots:
 
 private:
-	static void LoadDictionary(QFile *f);
+	static void LoadDictionary(QFile* f, QHash<QString,QStringList>* phondict);
 
 	int32					fFps, fAudioDuration;
 	QString					fAudioPath;

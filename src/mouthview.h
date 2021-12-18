@@ -14,6 +14,8 @@ public:
 
 	void SetDocument(LipsyncDoc *doc);
 	void SetMouth(int32 id);
+	int GetMouthSetCount();
+	QString GetMouthSetName(int i);
 
 signals:
 
@@ -28,7 +30,9 @@ private:
 	LipsyncDoc					*fDoc;
 	int32						fMouthID;
 	int32						fFrame;
-	QHash<QString, QImage *>	fMouths[4];
+	QHash<int,QString>			fMouthsName;
+	QList<QHash<QString, QImage*>>	fMouths;
+
 };
 
 #endif // MOUTHVIEW_H

@@ -15,6 +15,8 @@
         <file>dictionaries/standard_dictionary</file>
         <file>dictionaries/user_dictionary</file>
         <file>dictionaries/phoneme_mapping</file>
+        <file>dictionaries/RU/phoneme_mapping</file>
+        <file>dictionaries/RU-ext/phoneme_mapping</file>
     </qresource>
     <qresource prefix="/mouths">
         <file>mouths/1_Mouth_1/AI.jpg</file>
@@ -57,6 +59,18 @@
         <file>mouths/4_Preston_Blair/rest.jpg</file>
         <file>mouths/4_Preston_Blair/U.jpg</file>
         <file>mouths/4_Preston_Blair/WQ.jpg</file>
+        <file>mouths/5_RUs/AEI.jpg</file>
+        <file>mouths/5_RUs/BMP.jpg</file>
+        <file>mouths/5_RUs/ChJSh.jpg</file>
+        <file>mouths/5_RUs/etc.jpg</file>
+        <file>mouths/5_RUs/FV.jpg</file>
+        <file>mouths/5_RUs/L.jpg</file>
+        <file>mouths/5_RUs/O.jpg</file>
+        <file>mouths/5_RUs/R.jpg</file>
+        <file>mouths/5_RUs/Th.jpg</file>
+        <file>mouths/5_RUs/U.jpg</file>
+        <file>mouths/5_RUs/WQ.jpg</file>
+        <file>mouths/5_RUs/rest.jpg</file>
     </qresource>
     <qresource prefix="/"/>
 </RCC>

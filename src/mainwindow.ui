@@ -205,7 +205,7 @@
        </layout>
       </item>
       <item>
-       <widget class="QComboBox" name="comboBox">
+       <widget class="QComboBox" name="MouthSet">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -757,7 +757,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>comboBox</sender>
+   <sender>MouthSet</sender>
    <signal>activated(int)</signal>
    <receiver>mouthView</receiver>
    <slot>onMouthChanged(int)</slot>
@@ -843,8 +843,8 @@
    <slot>onPlay()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>435</x>
-     <y>333</y>
+     <x>-1</x>
+     <y>-1</y>
     </hint>
     <hint type="destinationlabel">
      <x>435</x>
