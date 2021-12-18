@@ -71,7 +71,7 @@ void MainWindow::OpenFile(QString filePath)
 		QMessageBox::warning(this, tr("Papagayo"),
 							 tr("Error opening audio file."),
 							 QMessageBox::Ok);
-		setWindowTitle(tr("Papagayo"));
+		setWindowTitle(tr("Papagayo-R"));
 	}
 	else
 	{
@@ -88,7 +88,7 @@ void MainWindow::OpenFile(QString filePath)
 			ui->voiceText->setPlainText(fDoc->fCurrentVoice->fText);
 			fEnableAutoBreakdown = true;
 		}
-		setWindowTitle(tr("Papagayo") + " - " + info.fileName());
+		setWindowTitle(tr("Papagayo") + "-R - " + info.fileName());
 	}
 
 	ui->fpsEdit->setText(QString::number(fDoc->Fps()));
@@ -241,6 +241,7 @@ void MainWindow::updateActions()
 		ui->actionSave->setEnabled(true);
 		ui->actionSave_As->setEnabled(true);
 		ui->actionPlay->setEnabled(true);
+		ui->actionPause->setEnabled(true);
 		ui->actionStop->setEnabled(true);
 		ui->actionZoomIn->setEnabled(true);
 		ui->actionZoomOut->setEnabled(true);
@@ -262,6 +263,7 @@ void MainWindow::updateActions()
 		ui->actionSave->setEnabled(false);
 		ui->actionSave_As->setEnabled(false);
 		ui->actionPlay->setEnabled(false);
+		ui->actionPause->setEnabled(false);
 		ui->actionStop->setEnabled(false);
 		ui->actionZoomIn->setEnabled(false);
 		ui->actionZoomOut->setEnabled(false);
@@ -284,9 +286,9 @@ void MainWindow::onHelpAboutPapagayo()
 {
 	QString msg = "\
 <center>\
-<font size=+3><b>Papagayo</b></font>\
-<br><font size=-1><i>Version: 2.0b1</i></font>\
-<br><font size=-1>&copy; 2005-2014 Mike Clifton</font>\
+<font size=+3><b>Papagayo_R</b></font>\
+<br><font size=-1><i>Version: 3.0b1</i></font>\
+<br><font size=-1>&copy; 2005-2014 Mike Clifton, 2021 RVV</font>\
 <br><font size=-1><a href=\"http://www.gnu.org/licenses/gpl.html\">License: GPLv3</a></font>\
 <br><br><img src=\":/images/images/papagayo.png\"><br>\
 <br>A lip-sync tool for use with <a href=\"http://anime.smithmicro.com/\">Anime Studio Pro</a>\
@@ -332,7 +334,7 @@ void MainWindow::onFileSave()
 
 	fDoc->Save();
 	QFileInfo info(fDoc->fPath);
-	setWindowTitle(tr("Papagayo") + " - " + info.fileName());
+	setWindowTitle(tr("Papagayo") + "-R - " + info.fileName());
 }
 
 void MainWindow::onFileSaveAs()

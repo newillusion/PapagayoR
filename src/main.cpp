@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
 
 	QApplication a(argc, argv);
 
-	a.setApplicationName("Papagayo");
+	a.setApplicationName("Papagayo-R");
 	a.setOrganizationName("Lost Marble");
 	a.setOrganizationDomain("lostmarble.com");
 

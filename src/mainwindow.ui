@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Papagayo</string>
+   <string>Papagayo-R</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QHBoxLayout" name="horizontalLayout_6">
@@ -559,13 +559,13 @@
   <action name="actionPause">
    <property name="icon">
     <iconset resource="../rsrc/papagayo.qrc">
-     <normaloff>:/images/images/papagayo.png</normaloff>:/images/images/papagayo.png</iconset>
+     <normaloff>:/images/images/pause.png</normaloff>:/images/images/pause.png</iconset>
    </property>
    <property name="text">
     <string>Pause</string>
    </property>
    <property name="toolTip">
-    <string>Pause</string>
+    <string>Pause (Space bar)</string>
    </property>
   </action>
  </widget>
