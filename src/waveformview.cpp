@@ -1,7 +1,13 @@
+#include <QtWidgets>
+#include <QApplication>
+#include <QWidget>
 #include <QPainter>
 #include <QMouseEvent>
 #include <QScrollArea>
 #include <QScrollBar>
+#include <QMessageBox>
+#include <QVBoxLayout>
+#include <QSplitter>
 
 #include "waveformview.h"
 #include "breakdowndialog.h"
@@ -32,9 +38,8 @@ WaveformView::WaveformView(QWidget *parent) :
 	fPhraseBottom = 16;
 	fWordBottom = 32;
 	fPhonemeTop = 128;
-	fSelectedPhrase = NULL;
-	fSelectedWord = NULL;
-	fSelectedPhoneme = NULL;
+
+	SetSelectionNull();
 }
 
 WaveformView::~WaveformView()
@@ -61,6 +66,8 @@ void WaveformView::SetScrollArea(QScrollArea *scrollArea)
 
 void WaveformView::SetDocument(LipsyncDoc *doc)
 {
+	SetSelectionNull();
+
 	if (fDoc == NULL && doc)
 	{
 		fSampleWidth = DEFAULT_SAMPLE_WIDTH;
@@ -111,6 +118,14 @@ void WaveformView::SetDocument(LipsyncDoc *doc)
 	updateGeometry();
 	update();
 }
+
+void WaveformView::SetSelectionNull()
+	{
+	fSelectedPhrase = NULL;
+	fSelectedWord = NULL;
+	fSelectedPhoneme = fActivePhoneme = NULL;
+	}
+
 
 void WaveformView::onZoomIn()
 {
@@ -247,7 +262,7 @@ void WaveformView::mousePressEvent(QMouseEvent *event)
 	fDraggingEnd = -1;
 	fSelectedPhrase = fParentPhrase = NULL;
 	fSelectedWord = fParentWord = NULL;
-	fSelectedPhoneme = NULL;
+	fSelectedPhoneme = fActivePhoneme = NULL;
 
 	if (fDoc && fDoc->GetAudioPlayer())
 	{
@@ -344,6 +359,13 @@ void WaveformView::mousePressEvent(QMouseEvent *event)
 			{
 				mouseMoveEvent(event);
 			}
+
+			if (event->button() == Qt::RightButton && fSelectedPhoneme)
+				{
+				fDragging = false; return;
+				}
+
+
 			if (event->button() == Qt::RightButton && fSelectedWord)
 			{
 				fDragging = false;
@@ -549,6 +571,44 @@ void WaveformView::mouseReleaseEvent(QMouseEvent *event)
 		}
 		delete dlog;
 	}
+
+	if (event->button() == Qt::RightButton && fSelectedPhoneme)
+		{
+		auto dlg = fActivePhonemeSelector;
+
+		if (dlg==nullptr)
+			{
+			dlg = new QDialog(this);
+			connect( dlg, &dlg->finished, [this] { this->fActivePhonemeSelector = nullptr; } );
+			}
+
+		// we needs to update all - phonemes can be changed
+		auto cnt = new QVBoxLayout();
+		dlg->setLayout( cnt );
+
+		fActivePhoneme = fSelectedPhoneme;
+		QPushButton* toselect = nullptr;
+
+		auto line = new QSplitter(Qt::Orientation::Vertical);
+
+		for (int i=0; i<fDoc->Phonemes.count(); i++)
+			{
+			auto button = new QPushButton( fDoc->Phonemes[i] );
+			if (fDoc->Phonemes[i] == fSelectedPhoneme->fText) toselect = button;
+
+			line->addWidget( button );
+			connect( button, &button->clicked, [i,this]{ this->onChangePhonemeButton( i ); } );
+			}
+
+		cnt->addWidget( line );
+
+		fActivePhonemeSelector = dlg;
+		dlg->show();
+
+		if (toselect) toselect->setFocus();
+		}
+
+
 	fScrubFrame = -1;
 	fCurFrame = -1;
 	fDragging = false;
@@ -559,6 +619,20 @@ void WaveformView::mouseReleaseEvent(QMouseEvent *event)
 	emit(frameChanged(0));
 	update();
 }
+
+
+void WaveformView::onChangePhonemeButton(int phoneme)
+	{
+	if (fDoc && this->fActivePhoneme)
+		{
+		qDebug() << phoneme;
+		fActivePhoneme->fText = fDoc->Phonemes[phoneme];
+		update();
+		}
+	else
+		QMessageBox::warning(this,"Phoneme","No phoneme selected");
+	}
+
 
 void WaveformView::paintEvent(QPaintEvent *event)
 {
@@ -599,6 +673,7 @@ void WaveformView::paintEvent(QPaintEvent *event)
 	QColor		wordMissingFillCol(255, 127, 127);
 	QColor		wordMissingOutlineCol(255, 0, 0);
 	QColor		phonemeFillCol(231, 185, 210);
+	QColor		phonemeFillActiveCol(255, 255, 0);
 	QColor		phonemeOutlineCol(173, 114, 146);
 	QMediaPlayer	*audioPlayer = fDoc->GetAudioPlayer();
 
@@ -710,7 +785,7 @@ void WaveformView::paintEvent(QPaintEvent *event)
 						r.translate(0, -(textHeight - textHeight / 4));
 					phoneme->fTop = r.top();
 					phoneme->fBottom = r.bottom();
-					dc.fillRect(r, phonemeFillCol);
+					dc.fillRect(r, (fActivePhoneme && fActivePhoneme==phoneme) ? phonemeFillActiveCol : phonemeFillCol);
 					dc.setPen(phonemeOutlineCol);
 					dc.drawRect(r);
 					dc.setPen(textCol);

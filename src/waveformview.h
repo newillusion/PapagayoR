@@ -18,6 +18,9 @@ public:
 	void SetScrollArea(QScrollArea *scrollArea);
 	void SetDocument(LipsyncDoc *doc);
 
+	void onChangePhonemeButton(int phoneme);
+	void SetSelectionNull();
+
 signals:
 	void frameChanged(int);
 
@@ -53,9 +56,12 @@ private:
 	int32		fWordBottom;
 	int32		fPhonemeTop;
 
+	QDialog*	fActivePhonemeSelector;
+
 	LipsyncPhrase	*fSelectedPhrase, *fParentPhrase;
 	LipsyncWord		*fSelectedWord, *fParentWord;
 	LipsyncPhoneme	*fSelectedPhoneme;
+	LipsyncPhoneme*	 fActivePhoneme;
 };
 
 #endif // WAVEFORMVIEW_H
