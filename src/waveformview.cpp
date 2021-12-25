@@ -549,7 +549,7 @@ void WaveformView::mouseReleaseEvent(QMouseEvent *event)
 	if (event->button() == Qt::RightButton && fSelectedWord)
 	{
 		// manually enter the pronunciation for this word
-		BreakdownDialog *dlog = new BreakdownDialog(fSelectedWord, this);
+		BreakdownDialog *dlog = new BreakdownDialog(fSelectedWord, &(fDoc->Phonemes), this);
 		if (dlog->exec() == QDialog::Accepted)
 		{
 			fDoc->fDirty = true;

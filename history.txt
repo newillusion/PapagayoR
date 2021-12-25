@@ -1,0 +1,32 @@
+13:50 25.12.2021
+
+Попытался слить вместе изменения в оригинальном Papagayo (которыей еще без Spine) с этим. Оригинал в лежит "..\P". Использовал комманду:
+
+ git remote add PapaBasic ..\P
+ git fetch PapaBasic --tags
+ git merge --allow-unrelated-histories PapaBasic/master    # писал по памяти, может, эта команда немного не так выглядит
+
+подсказки можно посмотреть тут:
+https://question-it.com/questions/4999494/kak-obedinit-dva-repozitorija-git
+
+Выдержка оттуда:
+Если вы хотите объединить project-a в project-b:
+
+cd path/to/project-b
+git remote add project-a /path/to/project-a
+git fetch project-a --tags
+git merge --allow-unrelated-histories project-a/master # or whichever branch you want to merge
+git remote remove project-a
+Взято из: git объединить разные репозитории?
+
+Этот метод мне очень понравился, он короче и, на мой взгляд, намного чище.
+
+Если вы хотите поместить project-a в подкаталог, вы можете использовать git-filter-repo (filter-branch не рекомендуется). Выполните следующие команды перед командами выше:
+
+cd path/to/project-a
+git filter-repo --to-subdirectory-filter project-a
+Пример слияния двух больших репозиториев, помещая один из них в подкаталог: https: //gist.github .com / x-yuri / 9890ab1079cf4357d6f269d073fd9731.
+
+Примечание. Параметр --allow-unrelated-histories существует только с git> = 2.9. См. Git - git merge Documentation / --allow- несвязанные истории
+
+Обновление : добавлено --tags по предложению @jstadler для сохранения тегов.
