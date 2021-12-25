@@ -44,6 +44,20 @@ MainWindow::~MainWindow()
 	delete ui;
 }
 
+// There is issue with filename with non-ascii characters
+void MainWindow::CheckPath(QString filePath)
+	{
+	bool extra = false;
+	for (int i=0; i<filePath.count(); i++)
+		if (filePath[i]>0x7f) { extra = true; break; }
+
+
+	if (extra)
+		{
+		QMessageBox::warning( this, "!", "File path contains non-ascii symbols. Some issue may appears" );
+		}
+	}
+
 void MainWindow::OpenFile(QString filePath)
 {
 	if (fDoc)
@@ -60,6 +74,7 @@ void MainWindow::OpenFile(QString filePath)
 	}
 	else
 	{
+		CheckPath(filePath);
 		fDoc->OpenAudio(filePath);
 		fDoc->SetFps(fDefaultFps);
 	}
@@ -287,7 +302,7 @@ void MainWindow::onHelpAboutPapagayo()
 	QString msg = "\
 <center>\
 <font size=+3><b>Papagayo_R</b></font>\
-<br><font size=-1><i>Version: 3.0b1</i></font>\
+<br><font size=-1><i>Version: 3.0b2</i></font>\
 <br><font size=-1>&copy; 2005-2014 Mike Clifton, 2021 RVV</font>\
 <br><font size=-1><a href=\"http://www.gnu.org/licenses/gpl.html\">License: GPLv3</a></font>\
 <br><br><img src=\":/images/images/papagayo.png\"><br>\

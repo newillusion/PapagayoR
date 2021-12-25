@@ -21,6 +21,7 @@ public:
 
 public:
 	void OpenFile(QString filePath);
+	void CheckPath(QString filePath);
 	bool IsOKToCloseDocument();
 	void RestoreSettings();
 	void SaveSettings();
