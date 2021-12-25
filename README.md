@@ -1,9 +1,9 @@
-Papagayo with Spine Export
+Papagayo-R with Spine Export and Russian language support
 ========
 
 Lipsync tool for animators
 
-Papagayo 2.0b1 with Spine Export
+Papagayo-R 3.0b1 with Spine Export and Russian language support
 ------------------------------------------------------------
 
 This is a fork of LostMoho/Papagayo that adds an exporter for the Spine animation software(http://esotericsoftware.com/).
